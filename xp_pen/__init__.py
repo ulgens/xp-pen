@@ -4,7 +4,8 @@ import logging
 import sys
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Any, Awaitable, Callable, Optional
+from typing import Any
+from collections.abc import Awaitable, Callable
 from uuid import UUID, uuid4
 
 import usb.backend.libusb1
@@ -38,7 +39,7 @@ class XPPenClient:
         **kwargs,
     ) -> None:
         self._on_event: Callable[[Event], Awaitable[Any]] = on_event
-        self._current_event: Optional[Event] = None
+        self._current_event: Event | None = None
 
     async def start(self) -> None:
         while True:
@@ -83,9 +84,9 @@ class XPPenClient:
                     logger.info("USB DONE FLUSHING")
                 await asyncio.sleep(0.100)
 
-    async def _process_input(self, value: str) -> Optional[Event]:
+    async def _process_input(self, value: str) -> Event | None:
         method: str = "down"
-        event: Optional[Event] = None
+        event: Event | None = None
         start_time: datetime = datetime.now(UTC)
         if value == "0" and self._current_event and self._current_event.method != "up":
             method = "up"

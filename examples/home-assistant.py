@@ -1,6 +1,5 @@
 import asyncio
 import json
-from typing import Optional
 
 import httpx
 
@@ -17,7 +16,7 @@ async def set_brightness(entity_id: str, value: int):
 
 
 async def make_request(
-    url: str, payload: Optional[dict] = None, method: str = "post"
+    url: str, payload: dict | None = None, method: str = "post"
 ) -> dict:
     url = f"http://homeassistant.local:8123/api/{url}"
     headers = {
